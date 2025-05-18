@@ -48,10 +48,23 @@ class _CubitCounterView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-       /*  title: Text(
+        /* title: Text(
           'Cubit Counter ${counterState.transactionCount}',
           style: textStyle.titleLarge,
         ), */
+        title: context.select((CounterCubit value) {
+          return Text(
+            'Cubit Counter ${value.state.transactionCount}',
+            style: textStyle.titleLarge,
+          );
+          // ✅ context.select<T, R>((T) => R) permite "escuchar" solo una parte del estado del Cubit.
+          // En este caso, escucha solo `transactionCount` del estado actual.
+          // El widget solo se reconstruirá si ese valor específico cambia.
+          //
+          // 🟨 Esto es funcionalmente similar a BlocBuilder con `buildWhen`, pero más directo y local.
+          // 🟣 En Riverpod sería: ref.watch(counterProvider.select((s) => s.transactionCount))
+        }),
+
         actions: [
           IconButton(
             onPressed: () {
@@ -72,7 +85,7 @@ class _CubitCounterView extends StatelessWidget {
           builder: (context, state) {
             // El estado más reciente del Cubit llega aquí como parámetro `state`
             // Esto hace que **solo este widget** se reconstruya cuando cambie el estado.
-
+            debugPrint('el estado cmabio');
             return Text('Counter value: ${state.counter}');
             // Se muestra el valor actual del contador
           },
