@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart'; // Necesario para usar BlocProvider y BlocBuilder
-import 'package:forms_app/presentation/blocs/cubits/counter/counter_cubit.dart'; // Importa el Cubit creado anteriormente
+import 'package:forms_app/presentation/blocs/counter_cubit/counter_cubit.dart'; // Importa el Cubit creado anteriormente
 
 class CubitCounterScreen extends StatelessWidget {
   static String name =
