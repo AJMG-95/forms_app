@@ -42,7 +42,7 @@ class _CubitCounterView extends StatelessWidget {
     // Este método escucha el Cubit y obtiene el estado actual (CounterState).
     // Cada vez que se emite un nuevo estado desde el Cubit, este widget completo se vuelve a construir.
     // Es útil si necesitas acceder a propiedades del estado fuera del BlocBuilder.
-    // 🟠 CUIDADO: Si el estado cambia, TODO el método build se ejecuta de nuevo, lo que puede ser menos eficiente.
+    // 🟠 CUIDADO: Si el estado cambia, Todo!! el método build se ejecuta de nuevo, lo que puede ser menos eficiente.
     // 🔁 En Riverpod, esto sería equivalente a: final state = ref.watch(counterProvider);
     // final counterState = context.watch<CounterCubit>().state;
 

@@ -11,7 +11,6 @@ sealed class CounterEvent extends Equatable {
 Es raro que se necesite comparar eventos, por ello no se va a usar equatable
 */
 
-
 // 🔒 Sealed class: asegura que solo se puedan crear eventos específicos definidos aquí.
 sealed class CounterEvent {
   const CounterEvent();
@@ -23,3 +22,5 @@ class CounterIncreased extends CounterEvent {
 
   const CounterIncreased(this.value); // Por ejemplo: CounterIncreased(3)
 }
+
+class CounterReset extends CounterEvent {}

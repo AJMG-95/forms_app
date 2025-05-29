@@ -5,41 +5,74 @@ import 'package:equatable/equatable.dart';
 part 'counter_event.dart';
 part 'counter_state.dart';
 
-// Aquí se define la clase BLoC que recibe eventos de tipo CounterEvent
-// y emite estados de tipo CounterState.
+// 🎯 Esta clase define el Bloc, que conecta eventos (CounterEvent) con estados (CounterState)
 class CounterBloc extends Bloc<CounterEvent, CounterState> {
   /*
-    👇 Este constructor llama al constructor de la clase base Bloc.
-    Inicia el bloc con un estado por defecto: CounterState(counter: 10, transactionCount: 0)
+    👇 Este es el constructor del Bloc.
+    Se llama al constructor padre (`super`) con el estado inicial que tendrá el bloc.
 
-    En otras palabras:
-    - El "contador" arranca en 10
-    - Aún no se ha hecho ninguna acción (transactionCount = 0)
+    En este caso:
+    - El contador arranca en 10
+    - transactionCount (cuántas veces se modificó) arranca en 0
   */
   CounterBloc() : super(const CounterState()) {
     /*
-      🧩 Esta es la parte más importante: se define qué hacer cuando se recibe un evento.
+      🧩 Aquí definimos qué debe hacer el Bloc cuando recibe un evento específico.
+      Este es el "registro" de manejadores de eventos.
 
-      on<CounterIncreased>((event, emit) { ... })
+      on<Evento>((evento, emit) => lógica...)
 
-      Esto le dice al bloc:
-      👉 "Cuando recibas un evento de tipo CounterIncreased, ejecuta este código"
-
-      `event` contiene los datos del evento (por ejemplo, cuánto aumentar)
-      `emit()` se usa para mandar un nuevo estado
+      ✅ En este caso: si llega un CounterIncreased, ejecuta _onCounterIncreased.
     */
 
-    on<CounterIncreased>((event, emit) {
-      emit(
-        state.copyWith(
-          counter:
-              state.counter +
-              event.value, // Aumenta el contador con el valor del evento
-          transactionCount:
-              state.transactionCount +
-              1, // Cuenta cuántas veces se ha incrementado
-        ),
-      );
-    });
+    /* on<CounterIncreased>((event, emit) => _onCounterIncreased(event, emit)); */
+    on<CounterIncreased>(_onCounterIncreased);
+    on<CounterReset>(_onCounterReset);
   }
+
+  /*
+    ✅ Esta es una función "handler" separada que procesa el evento CounterIncreased.
+    - `event` contiene los datos del evento (por ejemplo, `value = 3`)
+    - `emit` se usa para enviar un nuevo estado al Bloc
+
+    La lógica es:
+    - Sumar el valor al contador actual
+    - Aumentar el número de transacciones
+    - Crear un nuevo estado y emitirlo
+  */
+  void _onCounterIncreased(CounterIncreased event, Emitter<CounterState> emit) {
+    emit(
+      state.copyWith(
+        counter: state.counter + event.value,
+        transactionCount: state.transactionCount + 1,
+      ),
+    );
+  }
+
+  void _onCounterReset(CounterReset event, Emitter<CounterState> emit) {
+    emit(state.copyWith(counter: 0));
+  }
+
+  /*
+    🧩 ¿Por qué hacemos esto?
+
+    Porque no queremos que el widget sepa demasiado sobre los eventos internos.
+    Es mejor que el widget solo diga "quiero aumentar" o "quiero reiniciar",
+    y que sea el BLoC el que se encargue de qué evento tiene que dispararse.
+
+    Esto:
+      - Hace el código más limpio y entendible
+      - Evita repetir `.add(...)` por todas partes
+      - Hace más fácil cambiar el comportamiento en el futuro (solo se cambia aquí)
+  */
+  void increaseBy([int value = 1]) {
+    // 📤 Envia un evento CounterIncreased con el valor que se pasó
+    add(CounterIncreased(value));
+  }
+
+  void resetCounter() {
+    // 📤 Envia un evento CounterReset para reiniciar el contador
+    add(CounterReset());
+  }
+
 }
